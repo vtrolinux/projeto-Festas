@@ -20,8 +20,8 @@ router.post('/register', async(req,res)=>{
 //check se usuário já existe
     const emailExists = await User.findOne({email: email})
     if(emailExists){
-        res.status(404).json({error:"O email informado já está em uso"})
         console.log("O email informado já está em uso")
+        return res.status(404).json({error:"O email informado já está em uso"})   
     }
 // create password
     const salt = await bcrypt.genSalt(12)
