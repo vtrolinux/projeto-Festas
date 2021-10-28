@@ -66,6 +66,7 @@ const user = await User.findOne({email: email})
     //check match senha
     const checkPassword = await bcrypt.compare(password, user.password)
     if(!checkPassword){
+        console.log('checkMatch senha: '+checkPassword)
         return res.status(400).json({error:"senha inválida"})
 
     }

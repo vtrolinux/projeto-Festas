@@ -6,6 +6,7 @@ const cors = require('cors')
 
 //routes
 const authRouter = require('./routers/authRoutes.js')
+const userRouter = require('./routers/userRoutes')
 //middleware
 
 //config
@@ -17,6 +18,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('public'))
 app.use('/api/auth', authRouter)
+app.use('/api/user', userRouter)
 
 //atrelar rotas ao express
 
