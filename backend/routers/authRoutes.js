@@ -9,19 +9,20 @@ router.post('/register', async(req,res)=>{
     const email = req.body.email
     const password = req.body.password
     const confirmPassword = req.body.confirmPassword
-    //console.log(req.body)
+    console.log(req.body)
 //check for require
-    if(name ==null||email==null||password==null||confirmPassword==null){
-        res.status(404).json({error:"por favor preencha todos os campos"})
+    if(name === null||email === null||password === null||confirmPassword === null){
+        console.log('passei null')
+       return res.status(400).json({ error:"por favor preencha todos os campos" });
     }
     if(password != confirmPassword){
-        res.status(404).json({error:"As senhas não são iguais"})
+       return res.status(400).json({error:"As senhas não são iguais"})
     }
 //check se usuário já existe
     const emailExists = await User.findOne({email: email})
     if(emailExists){
         console.log("O email informado já está em uso")
-        return res.status(404).json({error:"O email informado já está em uso"})   
+        return res.status(400).json({error:"O email informado já está em uso"})   
     }
 // create password
     const salt = await bcrypt.genSalt(12)

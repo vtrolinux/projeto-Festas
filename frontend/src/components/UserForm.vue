@@ -1,7 +1,8 @@
 <template>
     <div>
-        <Message :msg='msg' :msgClass='msgClass'/>
+        <Message :msg="msg" :msgClass="msgClass" />
         <form id="user-form" @submit="page ==='register' ? register($event) : update($event)">
+            
             <div class="input-container">
                 <label for="name">Nome:</label>
                 <input type="text" id='name' name='name' v-model='name' placeholder="Digite o seu nome...">
@@ -29,9 +30,15 @@
     import Message from './Message.vue'
 
 export default {
-    name: 'RegisterForm',
+    name: "RegisterForm",  
+    props: ["user","page","btnText"],
+    components: {
+        InputSubmit,
+        Message
+    },
     data(){
         return {
+            id: null,
             name: null,
             email: null,
             password: null,
@@ -40,16 +47,56 @@ export default {
             msgClass: null
         }
     },
-    props: ['user','page','btnText'],
-    components: {
-        InputSubmit,
-        Message
-    },
     methods: {
         async register(e){
 
             e.preventDefault() //nao da refresh quando envia o formulario
-            console.log('funcionando vue method')
+            const url = 'http://localhost:3000/api/auth/register'
+            const data = {
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                confirmPassword: this.confirmPassword
+            }
+            const jsonData = JSON.stringify(data)
+            console.log(jsonData)
+
+            const fetchOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: jsonData
+            }
+
+            await fetch(url, fetchOptions)
+            .then((resp) =>  resp.json())
+            .then((data) => {
+                console.log('data: '+data)
+                    let auth = false
+                    if(data.error){
+                        this.msg = data.error
+                        this.msgClass = 'error'
+                        console.log('dataerror: '+data.error)
+                    }else{
+                        this.msg = data.msg
+                        this.msgClass = 'success'
+
+                        //emitir evento para o vuex salvar o usuario(storage) ex: salvar token/id para uso futuro
+
+                    }
+                    setTimeout(() => {
+                        if(!auth){
+                        this.msg = null
+                    }else{
+                        //se efetuar o login redireciona para dashboard
+                        this.$router.push('dashboard')
+                    }
+                    },2000)// apaga a mensagem de confirmação depois de 2 segundos
+
+                }).catch((err) => {
+                    console.log(err)
+                })
 
         }
     }
