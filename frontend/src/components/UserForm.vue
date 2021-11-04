@@ -72,18 +72,19 @@ export default {
             await fetch(url, fetchOptions)
             .then((resp) =>  resp.json())
             .then((data) => {
-                console.log('data: '+data)
+                console.log('data: '+ data)
                     let auth = false
                     if(data.error){
                         this.msg = data.error
                         this.msgClass = 'error'
                         console.log('dataerror: '+data.error)
                     }else{
+                        auth = true
                         this.msg = data.msg
                         this.msgClass = 'success'
 
                         //emitir evento para o vuex salvar o usuario(storage) ex: salvar token/id para uso futuro
-
+                        this.$store.commit('authenticate', {token: data.token, userId: data.userId})
                     }
                     setTimeout(() => {
                         if(!auth){

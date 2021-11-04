@@ -9,12 +9,12 @@ export default createStore({
   state() {
     return {
       authenticated: false,
-      token: false,
-      userId: false
+      token: null,
+      userId: null
     }
   },
   mutations: {
-    authenticated(state, data) {
+    authenticate(state, data) {
       state.authenticated = true,
       state.token = data.token,
       state.userId = data.userId
@@ -33,6 +33,6 @@ export default createStore({
     userId:state => state.userId
   }
   ,
-  modules: [vuexlocal.plugin]
+  plugins: [vuexlocal.plugin]
   
 })

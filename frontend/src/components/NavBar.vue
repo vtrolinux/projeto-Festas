@@ -6,14 +6,34 @@
         <h2 id='nav-title'>Party Time</h2>
         <div id='nav-links'>
             <router-link to='/'>Home </router-link>
-            <router-link to='/about'>Entrar </router-link> 
-            <router-link to='/register'>Cadastrar </router-link>   
+            <router-link to='/login' v-show="!authenticated">Entrar </router-link> 
+            <router-link to='/register' v-show="!authenticated">Cadastrar </router-link>   
+            <router-link to='/dashboard' v-show="authenticated">Dashboard </router-link>
+            <router-link to='/profile' v-show="authenticated">Configurações </router-link>
+            <button @click="logout($event)" v-show="authenticated">Sair</button>
+            
         </div>                                       
     </div>    
 </template>
 <script>
+
+import {mapState} from 'vuex'
     export default {
-        name: 'NavBar'
+        name: 'NavBar',
+        methods: {
+            logout(e){
+                e.preventDefault();
+                // emite evento para deslogar usuário
+                this.$store.commit('logout')
+                //redirect
+                this.$router.push('/')
+            }
+        },
+        computed: {
+            ...mapState([
+                'authenticated'
+            ])
+        }
     }
 </script>
 
