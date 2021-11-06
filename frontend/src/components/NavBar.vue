@@ -44,6 +44,7 @@ import {mapState} from 'vuex'
         justify-content: space-between;
         padding: 20px;
         border: 1px solid #eee;
+        
     }
     #nav a {
         text-decoration: none;

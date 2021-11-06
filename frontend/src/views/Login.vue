@@ -20,5 +20,7 @@ import LoginForm from '../components/LoginForm.vue'
         padding-top: 40px;
         padding-bottom: 100px;
     }
-
+    .login h1 {
+        margin-bottom: 40px
+    }
 </style>

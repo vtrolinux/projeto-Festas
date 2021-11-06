@@ -23,7 +23,7 @@ router.get('/:id',verifyToken, async(req,res)=>{
     
 })
 // update de informacoes do usuario pelo mesmo (+segurança)
-router.put('/',verifyToken, async(req,res)=>{
+router.patch('/',verifyToken, async(req,res)=>{
     console.log(req)
     const token = req.header('auth-token')
     const user = await getUserByToken(token)
@@ -35,7 +35,7 @@ router.put('/',verifyToken, async(req,res)=>{
     //verifica se o ID de usuário é igual ao token ID(prevenir manipulação de token durante requests)
     const userId = user._id.toString()
     if(userId != userReqId){
-        console.log('passei')
+        console.log('passei userId != userReqId')
         return res.status(401).json({error: 'Acesso Negado!'})
     }
     //Objeto de update do usuário
