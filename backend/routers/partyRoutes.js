@@ -159,8 +159,8 @@ router.delete('/', verifyToken, async(req,res)=>{
     try{
         const userPartyId = await Party.findOne({_id: partyId})
         if(userId == userPartyId.userId.toString()){
-        await Party.deleteOne({_id: partyId, userId: userId})
-        res.json({error:null, msg: 'Festa Deletada'})
+            await Party.deleteOne({_id: partyId, userId: userId})
+            return res.json({error:null, msg: 'Festa Deletada'})
         }
     }catch(err){
         return res.status(400).json({error: 'Acesso Negado'})

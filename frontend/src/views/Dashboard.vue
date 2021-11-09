@@ -6,6 +6,7 @@
         </div>
         <div v-if='parties.length > 0 '>
             <h1>Tabela de Festa</h1>
+            <DataTable :parties='parties' />
         </div>
         <div v-else>
             <p>Você ainda não possui festas cadastradas, <router-link to='/newparty'>clique aqui para criar a sua festa!</router-link></p>
@@ -14,10 +15,39 @@
 </template>
 
 <script>
+import DataTable from '../components/DataTable.vue'
     export default {
         data() {
             return {
                 parties: []
+            }
+        },
+        created(){
+            //lifecycle hook
+            this.getParties()
+        },components:{
+            DataTable
+        },
+        methods: {
+            async getParties() {
+                const token = this.$store.getters.token
+                const url = 'http://localhost:3000/api/party/userparties'
+                const fetchOptions = {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'Application/Json',
+                        'auth-token': token
+                    }
+                }
+                await fetch(url, fetchOptions)
+                .then((resp) => resp.json())
+                .then((data) => {
+                    console.log(data)
+                    this.parties = data.parties
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             }
         }
     }

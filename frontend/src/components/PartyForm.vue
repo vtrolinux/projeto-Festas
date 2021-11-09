@@ -95,9 +95,12 @@ export default {
                     this.msgClass = 'success'    
                 }
                 setTimeout(()=>{
-                        this.msg = null
-                },2000)
-                
+                    this.msg = null
+                    //redirect
+                    if(!data.error){
+                        this.$router.push('dashboard')
+                    }                             
+                },2000)          
             }).catch((err)=>{
                 console.log(err)
             })
