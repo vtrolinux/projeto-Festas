@@ -17,7 +17,7 @@ const getUserByToken = require('../helpers/get-user-by-token')
 //create new party
 router.post('/', verifyToken, upload.fields([{name: "photos"}]), async(req,res) => {
     //upload.fields([{'photos'}]) identificação de quais campos são de upload de arquivo
-    console.log(req)
+    //console.log(req)
     const title = req.body.title
     const description = req.body.description
     const partyDate = req.body.party_date
@@ -167,17 +167,16 @@ router.delete('/', verifyToken, async(req,res)=>{
 
 })
 //Update Festa
-router.put('/',verifyToken, upload.fields([{name: 'photos'}]), async(req,res)=>{
-    console.log(req.body)
+router.patch('/',verifyToken, upload.fields([{name: 'photos'}]), async(req,res)=>{
+    console.log(req)
     
     const title = req.body.title
     const description = req.body.description
     const partyDate = req.body.party_date
     const privacy = req.body.privacy
     const partyId = req.body.id
-    const partyUserId = req.body.userId
+    const partyUserId = req.body.user_id
     
-
     let files = []
     //verifica se veio arquivos na requisição | *O usuário pode armazenar festas sem fotos
     if(req.files){
@@ -185,7 +184,7 @@ router.put('/',verifyToken, upload.fields([{name: 'photos'}]), async(req,res)=>{
     }
     //validações
     if(title =='null' || description=='null' || partyDate=='null'){
-        res.status(400).json({error: 'Preencha os campos'})
+        return res.status(400).json({error: 'Preencha os campos'})
     }
     //verificar usuário
     const token = req.header("auth-token");
@@ -207,8 +206,9 @@ router.put('/',verifyToken, upload.fields([{name: 'photos'}]), async(req,res)=>{
         description: description,
         partyDate: partyDate,
         privacy: privacy,
-        userId: partyUserId
+        userId: partyUserId,
     }; 
+    //console.log('party sTRING: ' + JSON.stringify(party))
     // create photos array with path
     let photos = [];
 
@@ -226,11 +226,11 @@ router.put('/',verifyToken, upload.fields([{name: 'photos'}]), async(req,res)=>{
 
         // returns updated data
         const updatedParty = await Party.findOneAndUpdate({ _id: partyId, userId: partyUserId }, { $set: party }, {new: true});
-        res.json({ error: null, msg: "Evento atualizado com sucesso!", data: updatedParty });
+        return res.json({ error: null, msg: "Evento atualizado com sucesso!", data: updatedParty });
     
       } catch (error) {
     
-        res.status(400).json({ error })
+        return res.status(400).json({ error })
           
       }
 })

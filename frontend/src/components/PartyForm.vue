@@ -1,7 +1,7 @@
 <template>
     <div>
         <Message :msg="msg" :msgClass="msgClass" />
-        <form id="party-form" enctype="multipart/form-data" @submit="page === 'newparty' ? createParty($event) : update($event)">
+        <form id="party-form" enctype="multipart/form-data" @submit="page === 'newparty' ? createParty($event) : updateParty($event)">
             <input type="hidden" id="id" name="id" v-model="id">
             <input type="hidden" id="user_id" name="user_id" v-model="user_id">
             <div class="input-container">
@@ -111,7 +111,47 @@ export default {
             this.showMiniImages = false
         },
         async updateParty(e){
+            e.preventDefault()
+            const formData =  new FormData();
 
+            formData.append('id', this.id);
+            formData.append('title', this.title);
+            formData.append('description', this.description);
+            formData.append('party_date', this.party_date);
+            formData.append('privacy', this.privacy);
+            formData.append('user_id', this.user_id);
+
+            //insere as fotos no 'envelope'
+            if(this.photos.length > 0) {
+                for (const i of Object.keys(this.photos)) {
+                    formData.append('photos', this.photos[i])
+                }
+            }
+            const token = this.$store.getters.token;           
+            const url = 'http://localhost:3000/api/party/'
+            const fetchOptions = {
+                method: 'PATCH',
+                headers: {                   
+                    'auth-token': token
+                },
+                body: formData
+            }
+            await fetch(url, fetchOptions)
+            .then((resp) => resp.json())
+            .then((data) => {
+                if(data.error){
+                    this.msg = data.error
+                    this.msgClass = 'error'
+                }else {
+                    this.msg = data.msg
+                    this.msgClass = 'success'    
+                }
+                setTimeout(()=>{
+                    this.msg = null                           
+                },2000)          
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
     }
 }
