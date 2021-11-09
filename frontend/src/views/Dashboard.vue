@@ -1,15 +1,51 @@
 <template>
     <div class="dashboard">
-        <h1>voce está autenticado (dashboard)_</h1>
+        <div class="title-container">
+            <h1>Gerencie seus eventos</h1>
+            <router-link to='/newparty' class='btn'>Cadastrar Festa</router-link>
+        </div>
+        <div v-if='parties.length > 0 '>
+            <h1>Tabela de Festa</h1>
+        </div>
+        <div v-else>
+            <p>Você ainda não possui festas cadastradas, <router-link to='/newparty'>clique aqui para criar a sua festa!</router-link></p>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        
+        data() {
+            return {
+                parties: []
+            }
+        }
     }
 </script>
 
 <style scoped>
-
+    .dashboard {
+        padding:50px;
+        padding-bottom: 100px;
+    }
+    .title-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 40px;
+    }
+    .btn {
+        padding: 10px 16px;
+        background-color: #000;
+        color: #fff;
+        margin: 5px;
+        text-decoration: none;
+        border:none;
+        cursor: pointer;
+        font-size: 14px;
+        transition: .5s;
+    }
+    .btn:hover {
+        background-color: #141619;
+    }
 </style>

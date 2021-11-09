@@ -15,9 +15,9 @@ const verifyToken = require('../helpers/check-token')
 const getUserByToken = require('../helpers/get-user-by-token')
 
 //create new party
-router.post('/', verifyToken, upload.fields([{name:'photos'}]), async(req,res) => {
+router.post('/', verifyToken, upload.fields([{name: "photos"}]), async(req,res) => {
     //upload.fields([{'photos'}]) identificação de quais campos são de upload de arquivo
-    console.log(req.body)
+    console.log(req)
     const title = req.body.title
     const description = req.body.description
     const partyDate = req.body.party_date
@@ -25,11 +25,12 @@ router.post('/', verifyToken, upload.fields([{name:'photos'}]), async(req,res) =
     let files = []
     //verifica se veio arquivos na requisição | *O usuário pode armazenar festas sem fotos
     if(req.files){
+        console.log('tem fotos')
         files = req.files.photos
     }
     //validações
     if(title =='null' || description=='null' || partyDate=='null'){
-        res.status(400).json({error: 'Preencha os campos'})
+        return res.status(400).json({error: 'Preencha os campos'})
     }
     //verificar usuário
     const token = req.header('auth-token')
@@ -46,7 +47,7 @@ router.post('/', verifyToken, upload.fields([{name:'photos'}]), async(req,res) =
         let photos = []
         if(files && files.length > 0){
             
-            files.forEach((PHOTO,i)=>{
+            files.forEach((PHOTO,i) => {
                 photos[i] = PHOTO.path
                 console.log('path foto: '+ photos[i])
             })
@@ -63,7 +64,7 @@ router.post('/', verifyToken, upload.fields([{name:'photos'}]), async(req,res) =
     })
     //salva festa no banco
     try{
-            const newParty = await party.save({})
+            const newParty = await party.save()
             res.json({error:null, msg: "Festa adicionada com sucesso", data: newParty})
     }catch(error){
             return res.status(400).json({error})
