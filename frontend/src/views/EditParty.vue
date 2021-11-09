@@ -15,9 +15,46 @@ export default {
     data() {
         return {
             party: {},
-            componentKey: 0,
+            componentKey: 0
+        }
+    },
+    created(){
+        //load party
+        this.getParty()
+    },
+    methods: {
+            async getParty(){
+            // pega id da url
+            const id = this.$route.params.id
+            const token = this.$store.getters.token
+            
+            console.log('id edit: '+id)
+
+            const url = `http://localhost:3000/api/party/${id}`
+            const fetchOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            }
+            await fetch(url, fetchOptions)
+            .then((resp) => resp.json())
+            .then((data) => {
+                this.party = data.party
+                this.party.partyDate = this.party.partyDate.substring(0,10)// exibe ano/mes/dia
+
+                this.party.photos.forEach((photo, index) => {
+                    this.party.photos[index] = photo.replace('public', 'http://localhost:3000')
+                })
+                this.componentKey += 1 //altera o valor do prop pra atualizar os dados alterando o valor da propriedade
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         }
     }
+
 }
 </script>
 

@@ -122,7 +122,6 @@ router.get('/userparties/:id', verifyToken, async(req,res)=>{
 })
 //get party public or private
 router.get('/:id', verifyToken, async(req,res)=>{
-
     try{
         const partyId =  req.params.id
         console.log('festa id params: '+partyId)
