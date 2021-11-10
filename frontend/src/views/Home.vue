@@ -2,48 +2,14 @@
   <div class="home">
     <h1> Veja as ultimas festas</h1>
     <div class="parties-container">
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
+
+      <div class="party-container" v-for="(party, index) in parties" :key='index'>
+        <div class="party-img" :style="{'background-image': 'url(' + party.photos[0] +')'}"></div>
+        <router-link :to='`/party/${party._id}`' class='party-title'>{{party.title}}</router-link>
+        <p class='party-date'>{{party.partyDate}}</p>
         <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
       </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
-      <div class="party-container">
-        <div class="party-img"></div>
-        <router-link to="/linkfesta" class='party-title'>Título da festa</router-link>
-        <p class='party-date'>Data: 10/05/2023</p>
-        <router-link to= '/linkfesta' class='party-details-btn'>Ver Mais</router-link>
-      </div>
+
     </div>
     <p v-if='parties.length === 0 '>Não há festas registradas...</p>
   </div>
@@ -51,9 +17,42 @@
 
 <script>
 export default {
-    data(){
+  data(){
     return {
       parties: []
+    }
+  },
+  created(){
+    //carrega as festas publicas do back-end
+    this.getParties()
+  },
+  methods:{
+    async getParties(){
+      const url = 'http://localhost:3000/api/party/all'
+      const fetchOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type':'application/json'
+        }
+      }
+      await fetch(url, fetchOptions)
+      .then((resp) => resp.json())
+      .then((data) => {
+                data.parties.forEach((party, index) => {
+
+                    if(party.partyDate) {
+                        party.partyDate = new Date(party.partyDate).toLocaleDateString();
+                    }
+                    if(party.photos.length > 0){
+                      party.photos.forEach((photo, index) => {
+                        party.photos[index] = photo.replace("public", "http://localhost:3000").replaceAll("\\", "/");
+                      });
+                    }
+                });
+                this.parties = data.parties;
+      }).catch((err) => {
+          console.log(err);
+        })   
     }
   }
 }
