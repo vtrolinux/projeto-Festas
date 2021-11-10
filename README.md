@@ -11,6 +11,7 @@ CRUD para usuário<br />
 CRUD para festas<br />
 Front-end framework: vue.js<br />
 Uso do vuex-persist para salvar os States de navegação do usuário<br />
+Navbar <br />
 
 
 
