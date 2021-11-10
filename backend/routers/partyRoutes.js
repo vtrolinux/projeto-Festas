@@ -78,7 +78,7 @@ router.get('/all',async(req,res)=>{
     try{
 
         const parties = await Party.find({privacy: false}).sort([['_id:',-1]]) //sort([['_id:',-1]]) as festas mais novas serão exibidas primeiro
-        res.json({error:null, parties: parties})
+        return res.json({error:null, parties: parties})
        
 
     }catch(error){
