@@ -1,32 +1,65 @@
 <template>  
-    <div class="party">
-        <h1>Titulo da festa</h1>
-        <div class="party-container">
-            <div class="party-images">
-                <div class="main-image"></div>
-                <div class="party-mini-images">
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                    <div class="mini-image"></div>
-                </div>
-            </div>
-            <div class="party-details">
-                <p class="bold">Descrição da Festa:</p>
-                <p class="party-description">Alguma descrição da festa: </p>
-                <p class="bold">Data da festa:</p>
-                <p class="party-date">10/05/2023</p>
-            </div>
+  <div class="party">
+    <h1>{{ party.title }}</h1>
+    <div class="party-container">
+      <div class="party-images" v-if="party.photos">
+        <div class="main-image" :style="{'background-image': 'url(' + party.photos[0] +')'}"></div>
+        <div class="party-mini-images" v-if="party.photos[1]">
+          <div class="mini-image" v-for="(photo, index) in party.photos.slice( 1, party.photos.length)" :key="index" :style="{'background-image': 'url(' + party.photos[index + 1] +')'}"></div>
         </div>
+      </div>
+      <div class="party-details">
+        <p class="bold">Descrição da festa:</p>
+        <p class="party-description">{{ party.description }}</p>
+        <p class="bold">Data da festa:</p>
+        <p class="party-date">{{ party.partyDate }}</p>        
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'Party'
+    name: 'Party',
+    data() {
+        return {
+            party: {}
+        }
+    }, created(){
+        //carrega festa
+        this.getParty() 
+    },
+    methods: {
+        async getParty(){
+            const id = this.$route.params.id
+            const token = this.$store.getters.token
+            const url = `http://localhost:3000/api/party/${id}`
+            const fetchOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': token
+                }
+            }
+            await fetch(url, fetchOptions)
+            .then((resp) => resp.json())
+            .then((data) => {
+                if(data.error != null){
+                    this.$router.push('/') //home
+                }
+                this.party = data.party
+                this.party.partyDate = new Date(this.party.partyDate).toLocaleDateString() // formato usado no brasil
+                
+                this.party.photos.forEach((photo, index) => {
+                    this.party.photos[index] = photo.replace('public', 'http://localhost:3000').replaceAll('\\', '/')
+                });
+            })
+            .catch((err) => { 
+                console.log(err)
+            })  
+            
+        }
+    }
 }
 </script>
 

@@ -128,7 +128,7 @@ router.get('/:id', verifyToken, async(req,res)=>{
         const party = await Party.findOne({_id: partyId})
             //festas publicas
         if(party.privacy === false){
-            res.json({error:null, party: party})
+            return res.json({error:null, party: party})
         }else{
             //private 
             const token = req.header('auth-token')
@@ -137,7 +137,7 @@ router.get('/:id', verifyToken, async(req,res)=>{
             const partyUserId = party.userId.toString()
             //ver se a festa pertence a ele
             if(userId == partyUserId){
-                res.json({error:null, party: party})
+                return res.json({error:null, party: party})
             }
 
         }
